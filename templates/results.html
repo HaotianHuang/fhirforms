@@ -4,6 +4,39 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #summaryContainer {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        #summaryContainer p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #summaryContainer ul {
+            list-style-type: none;
+        }
+        #summaryContainer ul > li {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #summaryContainer ul > li > ul > li {
+            font-weight: normal;
+        }
+        #resultsContainer {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #e9e9e9;
+        }
+    </style>
+    
     <title>Questionnaire Results</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
@@ -12,51 +45,96 @@
     <h2>Summary Statistics</h2>
     <div id="summaryContainer"></div>
     <div id="resultsContainer"></div>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #summaryContainer {
+        margin: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+    #summaryContainer p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    #summaryContainer ul {
+        list-style-type: none;
+    }
+    #summaryContainer ul > li {
+        margin: 10px 0;
+        font-weight: bold;
+    }
+    #summaryContainer ul > li > ul > li {
+        font-weight: normal;
+    }
+    #resultsContainer {
+        margin: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #e9e9e9;
+    }
+</style>
 
     <script>
-      let formUrl = '{{ form_url }}';
+let formUrl = '{{ form_url }}';
 
-    fetch(`http://hapi.fhir.org/baseR4/QuestionnaireResponse?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
-    .then(response => response.json())
-    .then(data => {
-        let resultsContainer = document.getElementById('resultsContainer');
-        let summaryContainer = document.getElementById('summaryContainer');
-        let responseCount = 0;
-        let summaryData = {};
+function processItem(item, summaryData) {
+    if (item.answer && item.answer[0]) {
+        let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display;
+        summaryData[item.linkId] = summaryData[item.linkId] || {};
+        summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
+    }
 
-        if(data.entry && data.entry.length > 0) {
-            data.entry.forEach((entry, index) => {
-                let div = document.createElement('div');
-                div.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
-                resultsContainer.appendChild(div);
+    if (item.item) {
+        item.item.forEach(subItem => processItem(subItem, summaryData));
+    }
+}
 
-                responseCount++;
-                if (entry.resource.item) {
-                    entry.resource.item.forEach(item => {
-                        if (item.answer && item.answer[0]) {
-                            let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display;
-                            summaryData[item.linkId] = summaryData[item.linkId] || {};
-                            summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
-                        }
-                    });
-                }
-            });
+fetch(`http://hapi.fhir.org/baseR4/QuestionnaireResponse?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
+.then(response => response.json())
+.then(data => {
+    let resultsContainer = document.getElementById('resultsContainer');
+    let summaryContainer = document.getElementById('summaryContainer');
+    let responseCount = 0;
+    let summaryData = {};
 
-            // Display summary statistics
-            summaryContainer.innerHTML += `Total Responses: ${responseCount} <br>`;
-            for (let [questionId, answers] of Object.entries(summaryData)) {
-                summaryContainer.innerHTML += `Question ID ${questionId}: <br>`;
-                for (let [answerValue, count] of Object.entries(answers)) {
-                    summaryContainer.innerHTML += `  ${answerValue}: ${count} <br>`;
-                }
+    if(data.entry && data.entry.length > 0) {
+        data.entry.forEach((entry, index) => {
+            let div = document.createElement('div');
+            div.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
+            resultsContainer.appendChild(div);
+
+            responseCount++;
+            if (entry.resource.item) {
+                entry.resource.item.forEach(item => {
+                    processItem(item, summaryData);
+                });
             }
-        } else {
-            resultsContainer.textContent = 'No results found';
+        });
+
+        // Display summary statistics
+        let summaryHtml = `<p>Total Responses: ${responseCount}</p>`;
+        summaryHtml += `<ul>`;
+        for (let [questionId, answers] of Object.entries(summaryData)) {
+            summaryHtml += `<li>Question ID ${questionId}:`;
+            summaryHtml += `<ul>`;
+            for (let [answerValue, count] of Object.entries(answers)) {
+                summaryHtml += `<li>${answerValue}: ${count}</li>`;
+            }
+            summaryHtml += `</ul></li>`;
         }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        summaryHtml += `</ul>`;
+        summaryContainer.innerHTML += summaryHtml;
+    } else {
+        resultsContainer.textContent = 'No results found';
+    }
+})
+.catch((error) => {
+    console.error('Error:', error);
+});
+
 
     </script>
   </body>

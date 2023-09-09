@@ -11,10 +11,6 @@
   <body>
     <button id="backBtn" class="btn btn-secondary mt-3 mb-3">Back to Home</button>  
     <div id="formContainer"></div>
-
-    <div class="form-group">
-        <input type="url" class="form-control" id="endpointURL" placeholder="Enter POST endpoint (default is HAPI)" value="https://hapi.fhir.org/baseR4">
-    </div>
     
       <button type="button" id="downloadBtn" class="btn btn-primary mt-3">Download JSON</button>
       <button type="button" id="pushBtn" class="btn btn-primary mt-3">Push to FHIR Server</button>
@@ -31,7 +27,8 @@
 
         let formDef = null;
         let formUrl = '{{ form_url }}';
-      
+        let endpointUrl = new URLSearchParams(window.location.search).get('endpoint_url');    
+
         fetch(formUrl)
         .then(response => response.json())
         .then(data => {
@@ -56,12 +53,12 @@
         });
       
         document.getElementById('pushBtn').addEventListener('click', function() {
-        const endpointURL = document.getElementById('endpointURL').value;
-        if (formDef) {
+                
+            if (formDef) {
             const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer');
             questionnaireResponse.questionnaire = formUrl;
 
-            fetch(endpointURL + '/QuestionnaireResponse', {
+            fetch(endpointUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/fhir+json'

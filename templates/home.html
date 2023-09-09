@@ -15,6 +15,8 @@
         <div class="form-group">
           <label for="formURL">Form URL</label>
           <input type="url" class="form-control" id="formURL" placeholder="Enter form URL" value="https://hapi.fhir.org/baseR4/Questionnaire/59525">
+          <label for="endpointURL">Endpoint URL</label>
+          <input type="url" class="form-control" id="endpointURL" placeholder="Enter endpoint URL" value="https://hapi.fhir.org/baseR4/QuestionnaireResponse">        
         </div>
         <button type="submit" class="btn btn-primary">Go to Form</button>
         <button type="button" id="viewResultsBtn" class="btn btn-secondary ml-2">View Results</button>
@@ -22,11 +24,13 @@
     </div>
 
     <script>
-      document.getElementById('urlForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formURL = document.getElementById('formURL').value;
-        window.location.href = `/form?form_url=${encodeURIComponent(formURL)}`;
-      });
+  document.getElementById('urlForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formURL = document.getElementById('formURL').value;
+    const endpointURL = document.getElementById('endpointURL').value; // get the endpoint URL
+    window.location.href = `/form?form_url=${encodeURIComponent(formURL)}&endpoint_url=${encodeURIComponent(endpointURL)}`; // include it in the URL
+  });
+
 
       document.getElementById('viewResultsBtn').addEventListener('click', function() {
         const formURL = document.getElementById('formURL').value;
