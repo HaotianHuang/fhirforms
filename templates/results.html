@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Questionnaire Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Questionnaire Results for '{{ form_url }}'</h1>
+    <h2>Summary Statistics</h2>
+    <div id="summaryContainer"></div>
+    <div id="resultsContainer"></div>
+
+    <script>
+      let formUrl = '{{ form_url }}';
+
+    fetch(`http://hapi.fhir.org/baseR4/QuestionnaireResponse?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
+    .then(response => response.json())
+    .then(data => {
+        let resultsContainer = document.getElementById('resultsContainer');
+        let summaryContainer = document.getElementById('summaryContainer');
+        let responseCount = 0;
+        let summaryData = {};
+
+        if(data.entry && data.entry.length > 0) {
+            data.entry.forEach((entry, index) => {
+                let div = document.createElement('div');
+                div.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
+                resultsContainer.appendChild(div);
+
+                responseCount++;
+                if (entry.resource.item) {
+                    entry.resource.item.forEach(item => {
+                        if (item.answer && item.answer[0]) {
+                            let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display;
+                            summaryData[item.linkId] = summaryData[item.linkId] || {};
+                            summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
+                        }
+                    });
+                }
+            });
+
+            // Display summary statistics
+            summaryContainer.innerHTML += `Total Responses: ${responseCount} <br>`;
+            for (let [questionId, answers] of Object.entries(summaryData)) {
+                summaryContainer.innerHTML += `Question ID ${questionId}: <br>`;
+                for (let [answerValue, count] of Object.entries(answers)) {
+                    summaryContainer.innerHTML += `  ${answerValue}: ${count} <br>`;
+                }
+            }
+        } else {
+            resultsContainer.textContent = 'No results found';
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
+    </script>
+  </body>
+</html>
