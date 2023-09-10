@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Simple Form Creator</title>
@@ -34,7 +35,8 @@
 
       document.getElementById('viewResultsBtn').addEventListener('click', function() {
         const formURL = document.getElementById('formURL').value;
-        window.location.href = `/results?form_url=${encodeURIComponent(formURL)}`;
+        const endpointURL = document.getElementById('endpointURL').value; // get the endpoint URL
+        window.location.href = `/results?form_url=${encodeURIComponent(formURL)}&endpoint_url=${encodeURIComponent(endpointURL)}`; // include it in the URL
       });
     </script>
   </body>

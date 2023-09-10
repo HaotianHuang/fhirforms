@@ -79,6 +79,8 @@
 
     <script>
 let formUrl = '{{ form_url }}';
+let endpointUrl = '{{ endpoint_url }}';    
+//let endpointUrl = new URLSearchParams(window.location.search).get('endpoint_url');    
 
 function processItem(item, summaryData) {
     if (item.answer && item.answer[0]) {
@@ -91,10 +93,10 @@ function processItem(item, summaryData) {
         item.item.forEach(subItem => processItem(subItem, summaryData));
     }
 }
-
-fetch(`http://hapi.fhir.org/baseR4/QuestionnaireResponse?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
+fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
 .then(response => response.json())
 .then(data => {
+
     let resultsContainer = document.getElementById('resultsContainer');
     let summaryContainer = document.getElementById('summaryContainer');
     let responseCount = 0;

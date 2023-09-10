@@ -17,7 +17,8 @@ def form():
 @app.route('/results', methods=['GET'])
 def get_results():
     form_url = request.args.get('form_url')
-    return render_template('results.html', form_url=form_url)
+    endpoint_url = request.args.get('endpoint_url')
+    return render_template('results.html', form_url=form_url, endpoint_url=endpoint_url)
 
 
 if __name__ == '__main__':
