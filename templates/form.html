@@ -56,6 +56,10 @@
         document.getElementById('refreshJSON').addEventListener('click', function() {
             if (formDef) {
                 const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer', ['extract']);
+
+                let formId = formUrl.split('/').slice(-2).join('/');
+                questionnaireResponse.questionnaire = formId;
+
                 document.getElementById('jsonContainer').textContent = JSON.stringify(questionnaireResponse, null, 2);
             }
         });
@@ -63,6 +67,9 @@
         document.getElementById('downloadBtn').addEventListener('click', function() {
             if (formDef) {
                 const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer', ['extract']);
+                let formId = formUrl.split('/').slice(-2).join('/');
+                questionnaireResponse.questionnaire = formId;
+
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questionnaireResponse));
                 const downloadAnchorNode = document.createElement('a');
                 downloadAnchorNode.setAttribute("href", dataStr);
