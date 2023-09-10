@@ -77,7 +77,8 @@
                 
             if (formDef) {
             const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer');
-            questionnaireResponse.questionnaire = formUrl;
+            let formId = formUrl.split('/').slice(-2).join('/');
+            questionnaireResponse.questionnaire = formId;
 
             fetch(endpointUrl, {
                 method: 'POST',
