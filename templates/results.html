@@ -87,6 +87,7 @@ function processItem(item, summaryData) {
         let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display || item.answer[0].valueDate || item.answer[0].valueInteger;
         summaryData[item.linkId] = summaryData[item.linkId] || {};
         summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
+        summaryData[item.linkId]['text'] = item.text; // Add question text to summary data
     }
 
     if (item.item) {
@@ -120,10 +121,12 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
         let summaryHtml = `<p>Total Responses: ${responseCount}</p>`;
         summaryHtml += `<ul>`;
         for (let [questionId, answers] of Object.entries(summaryData)) {
-            summaryHtml += `<li>Question ID ${questionId}:`;
+            summaryHtml += `<li>Question ID ${questionId} - ${answers['text']}:`; // Display question text in addition to ID
             summaryHtml += `<ul>`;
             for (let [answerValue, count] of Object.entries(answers)) {
-                summaryHtml += `<li>${answerValue}: ${count}</li>`;
+                if (answerValue !== 'text') { // Exclude 'text' from answer values
+                    summaryHtml += `<li>${answerValue}: ${count}</li>`;
+                }
             }
             summaryHtml += `</ul></li>`;
         }
@@ -141,3 +144,4 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
     </script>
   </body>
 </html>
+
