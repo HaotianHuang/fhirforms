@@ -50,6 +50,7 @@
     <h1>Questionnaire Results for '{{ form_url }}'</h1>
     <h2>Summary Statistics</h2>
     <div id="summaryContainer"></div>
+    <button id="viewRaw">View Raw</button>
     <div id="resultsContainer"></div>
 
     <script>
@@ -120,6 +121,11 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
     } else {
         resultsContainer.textContent = 'No results found';
     }
+
+    document.getElementById('viewRaw').addEventListener('click', () => {
+        let rawWindow = window.open("", "_blank");
+        rawWindow.document.write(`<pre>${JSON.stringify(data.entry, null, 2)}</pre>`);
+    });
 })
 .catch((error) => {
     console.error('Error:', error);
@@ -129,5 +135,6 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
     </script>
   </body>
 </html>
+
 
 
