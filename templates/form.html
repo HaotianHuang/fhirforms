@@ -53,40 +53,35 @@
             console.error('Error:', error);
         });
 
-        document.getElementById('refreshJSON').addEventListener('click', function() {
+        let questionnaireResponse = null;
+        let formId = null;
+
+        function refreshQuestionnaireResponse() {
             if (formDef) {
-                const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer', ['extract']);
-
-                let formId = formUrl.split('/').slice(-2).join('/');
+                questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer', ['extract']);
+                formId = formUrl.split('/').slice(-2).join('/');
                 questionnaireResponse.questionnaire = formId;
-
-                document.getElementById('jsonContainer').textContent = JSON.stringify(questionnaireResponse, null, 2);
             }
+        }
+
+        document.getElementById('refreshJSON').addEventListener('click', function() {
+            refreshQuestionnaireResponse();
+            document.getElementById('jsonContainer').textContent = JSON.stringify(questionnaireResponse, null, 2);
         });
 
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            if (formDef) {
-                const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer', ['extract']);
-                let formId = formUrl.split('/').slice(-2).join('/');
-                questionnaireResponse.questionnaire = formId;
-
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questionnaireResponse));
-                const downloadAnchorNode = document.createElement('a');
-                downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", "questionnaire_response.json");
-                document.body.appendChild(downloadAnchorNode); // required for firefox
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
-            }
+            refreshQuestionnaireResponse();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questionnaireResponse));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "questionnaire_response.json");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
         });
 
         document.getElementById('pushBtn').addEventListener('click', function() {
-                
-            if (formDef) {
-            const questionnaireResponse = LForms.Util.getFormFHIRData('QuestionnaireResponse', 'R4', 'formContainer');
-            let formId = formUrl.split('/').slice(-2).join('/');
-            questionnaireResponse.questionnaire = formId;
-
+            refreshQuestionnaireResponse();
             fetch(endpointUrl, {
                 method: 'POST',
                 headers: {
@@ -103,9 +98,9 @@
                 console.error('Error:', error);
                 alert('An error occurred while pushing the QuestionnaireResponse to the FHIR server.');
             });
-        }
-    });
-  </script>
+        });
+    </script>
   </body>
 </html>
+
 
