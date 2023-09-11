@@ -86,93 +86,93 @@
             <div id="summaryContainer"></div>
         </div>
         <div class="col-md-6">
-            <button id="viewRaw" class="btn btn-secondary btn-md ml-2">View Raw</button>
+            <button id="viewRaw" class="btn btn-secondary btn-md mt-3 mb-3">View Raw</button>
             <h2>Response</h2>
-            <p>QuestionnaireResponse from response deconstructed.</p>
+            <p>QuestionnaireResponse from response deconstructed (limited to top 100).</p>
             <div id="resultsContainer"></div>
         </div>
     <script>
 
-document.getElementById('backBtn').addEventListener('click', function() {
-            window.location.href = '/';
-        });
-
-let formUrl = '{{ form_url }}';
-let endpointUrl = '{{ endpoint_url }}';    
-
-function processItem(item, summaryData) {
-    if (item.answer && item.answer[0]) {
-        let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display || item.answer[0].valueDate || item.answer[0].valueInteger;
-        summaryData[item.linkId] = summaryData[item.linkId] || {};
-        summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
-        summaryData[item.linkId]['text'] = item.text; // Add question text to summary data
-    }
-
-    if (item.item) {
-        item.item.forEach(subItem => processItem(subItem, summaryData));
-    }
-}
-fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
-.then(response => response.json())
-.then(data => {
-
-    let resultsContainer = document.getElementById('resultsContainer');
-    let summaryContainer = document.getElementById('summaryContainer');
-    let responseCount = 0;
-    let summaryData = {};
-
-    if(data.entry && data.entry.length > 0) {
-        data.entry.forEach((entry, index) => {
-            let div = document.createElement('div');
-            let expandArrow = document.createElement('span');
-            expandArrow.textContent = `Response ${index+1}: ▶`;
-            expandArrow.classList.add('expand-arrow');
-            div.appendChild(expandArrow);
-            let responseContent = document.createElement('span');
-            responseContent.textContent = `${JSON.stringify(entry.resource)}`;
-            responseContent.classList.add('expandable-content');
-            div.appendChild(responseContent);
-            resultsContainer.appendChild(div);
-
-            expandArrow.addEventListener('click', () => {
-                responseContent.style.display = responseContent.style.display === 'none' ? 'inline' : 'none';
-            });
-
-            responseCount++;
-            if (entry.resource.item) {
-                entry.resource.item.forEach(item => {
-                    processItem(item, summaryData);
+        document.getElementById('backBtn').addEventListener('click', function() {
+                    window.location.href = '/';
                 });
-            }
-        });
 
-        // Display summary statistics
-        let summaryHtml = `<p>Total Responses: ${responseCount}</p>`;
-        summaryHtml += `<ul>`;
-        for (let [questionId, answers] of Object.entries(summaryData)) {
-            summaryHtml += `<li>Question ID ${questionId} - ${answers['text']}:`; // Display question text in addition to ID
-            summaryHtml += `<ul>`;
-            for (let [answerValue, count] of Object.entries(answers)) {
-                if (answerValue !== 'text') { // Exclude 'text' from answer values
-                    summaryHtml += `<li>${answerValue}: ${count}</li>`;
-                }
+        let formUrl = '{{ form_url }}';
+        let endpointUrl = '{{ endpoint_url }}';    
+
+        function processItem(item, summaryData) {
+            if (item.answer && item.answer[0]) {
+                let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display || item.answer[0].valueDate || item.answer[0].valueInteger;
+                summaryData[item.linkId] = summaryData[item.linkId] || {};
+                summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
+                summaryData[item.linkId]['text'] = item.text; // Add question text to summary data
             }
-            summaryHtml += `</ul></li>`;
+
+            if (item.item) {
+                item.item.forEach(subItem => processItem(subItem, summaryData));
+            }
         }
-        summaryHtml += `</ul>`;
-        summaryContainer.innerHTML += summaryHtml;
-    } else {
-        resultsContainer.textContent = 'No results found';
-    }
+        fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=100`)
+        .then(response => response.json())
+        .then(data => {
 
-    document.getElementById('viewRaw').addEventListener('click', () => {
-        let rawWindow = window.open("", "_blank");
-        rawWindow.document.write(`<pre>${JSON.stringify(data.entry, null, 2)}</pre>`);
-    });
-})
-.catch((error) => {
-    console.error('Error:', error);
-});
+            let resultsContainer = document.getElementById('resultsContainer');
+            let summaryContainer = document.getElementById('summaryContainer');
+            let responseCount = 0;
+            let summaryData = {};
+
+            if(data.entry && data.entry.length > 0) {
+                data.entry.forEach((entry, index) => {
+                    let div = document.createElement('div');
+                    let expandArrow = document.createElement('span');
+                    expandArrow.textContent = `Response ${index+1}: ▶`;
+                    expandArrow.classList.add('expand-arrow');
+                    div.appendChild(expandArrow);
+                    let responseContent = document.createElement('span');
+                    responseContent.textContent = `${JSON.stringify(entry.resource)}`;
+                    responseContent.classList.add('expandable-content');
+                    div.appendChild(responseContent);
+                    resultsContainer.appendChild(div);
+
+                    expandArrow.addEventListener('click', () => {
+                        responseContent.style.display = responseContent.style.display === 'none' ? 'inline' : 'none';
+                    });
+
+                    responseCount++;
+                    if (entry.resource.item) {
+                        entry.resource.item.forEach(item => {
+                            processItem(item, summaryData);
+                        });
+                    }
+                });
+
+                // Display summary statistics
+                let summaryHtml = `<p>Total Responses: ${responseCount}</p>`;
+                summaryHtml += `<ul>`;
+                for (let [questionId, answers] of Object.entries(summaryData)) {
+                    summaryHtml += `<li>Question ID ${questionId} - ${answers['text']}:`; // Display question text in addition to ID
+                    summaryHtml += `<ul>`;
+                    for (let [answerValue, count] of Object.entries(answers)) {
+                        if (answerValue !== 'text') { // Exclude 'text' from answer values
+                            summaryHtml += `<li>${answerValue}: ${count}</li>`;
+                        }
+                    }
+                    summaryHtml += `</ul></li>`;
+                }
+                summaryHtml += `</ul>`;
+                summaryContainer.innerHTML += summaryHtml;
+            } else {
+                resultsContainer.textContent = 'No results found';
+            }
+
+            document.getElementById('viewRaw').addEventListener('click', () => {
+                let rawWindow = window.open("", "_blank");
+                rawWindow.document.write(`<pre>${JSON.stringify(data.entry, null, 2)}</pre>`);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 
 
     </script>

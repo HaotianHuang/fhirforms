@@ -51,7 +51,7 @@
     <div class="jumbotron text-center">
       <h1 class="display-4">FHIR Forms Tester</h1>
       <p class="lead">This experimental tool lets you share fully rendered FHIR Questionnaires with respondents—like Google Forms—and fetch a summary view of responses in two simple steps (1) and (2).</p>
-      <p class="lead">Built using the <a href="https://github.com/lhncbc/lforms" target="_blank">LForms library</a> from Lister Hill National Center for Biomedical Communications</p>
+      <p class="lead">Built using the <a href="https://github.com/lhncbc/lforms" target="_blank">LForms library</a> from Lister Hill National Center for Biomedical Communications.</p>
     </div>
     <div class="container">
       <div class="row">
@@ -78,19 +78,15 @@
               </div>
             </div>
           </form>
-
       </div>
     </div>
-
     <script>
-  document.getElementById('urlForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const formURL = document.getElementById('formURL').value;
-    const endpointURL = document.getElementById('endpointURL').value; // get the endpoint URL
-    window.location.href = `/form?form_url=${encodeURIComponent(formURL)}&endpoint_url=${encodeURIComponent(endpointURL)}`; // include it in the URL
-  });
-
-
+      document.getElementById('urlForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formURL = document.getElementById('formURL').value;
+        const endpointURL = document.getElementById('endpointURL').value; // get the endpoint URL
+        window.location.href = `/form?form_url=${encodeURIComponent(formURL)}&endpoint_url=${encodeURIComponent(endpointURL)}`; // include it in the URL
+      });
       document.getElementById('viewResultsBtn').addEventListener('click', function() {
         const formURL = document.getElementById('formURL').value;
         const endpointURL = document.getElementById('endpointURL').value; // get the endpoint URL
