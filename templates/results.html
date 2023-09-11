@@ -35,6 +35,12 @@
             border: 1px solid #ccc;
             background-color: #e9e9e9;
         }
+        .expandable-content {
+            display: none;
+        }
+        .expand-arrow {
+            cursor: pointer;
+        }
     </style>
     
     <title>Questionnaire Results</title>
@@ -45,42 +51,10 @@
     <h2>Summary Statistics</h2>
     <div id="summaryContainer"></div>
     <div id="resultsContainer"></div>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-    #summaryContainer {
-        margin: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        background-color: #f9f9f9;
-    }
-    #summaryContainer p {
-        font-size: 18px;
-        font-weight: bold;
-    }
-    #summaryContainer ul {
-        list-style-type: none;
-    }
-    #summaryContainer ul > li {
-        margin: 10px 0;
-        font-weight: bold;
-    }
-    #summaryContainer ul > li > ul > li {
-        font-weight: normal;
-    }
-    #resultsContainer {
-        margin: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        background-color: #e9e9e9;
-    }
-</style>
 
     <script>
 let formUrl = '{{ form_url }}';
 let endpointUrl = '{{ endpoint_url }}';    
-//let endpointUrl = new URLSearchParams(window.location.search).get('endpoint_url');    
 
 function processItem(item, summaryData) {
     if (item.answer && item.answer[0]) {
@@ -106,8 +80,19 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
     if(data.entry && data.entry.length > 0) {
         data.entry.forEach((entry, index) => {
             let div = document.createElement('div');
-            div.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
+            let expandArrow = document.createElement('span');
+            expandArrow.textContent = '▶';
+            expandArrow.classList.add('expand-arrow');
+            div.appendChild(expandArrow);
+            let responseContent = document.createElement('span');
+            responseContent.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
+            responseContent.classList.add('expandable-content');
+            div.appendChild(responseContent);
             resultsContainer.appendChild(div);
+
+            expandArrow.addEventListener('click', () => {
+                responseContent.style.display = responseContent.style.display === 'none' ? 'inline' : 'none';
+            });
 
             responseCount++;
             if (entry.resource.item) {
@@ -144,4 +129,5 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
     </script>
   </body>
 </html>
+
 
