@@ -81,11 +81,11 @@ fetch(endpointUrl + `?questionnaire=${encodeURIComponent(formUrl)}&_count=40`)
         data.entry.forEach((entry, index) => {
             let div = document.createElement('div');
             let expandArrow = document.createElement('span');
-            expandArrow.textContent = '▶';
+            expandArrow.textContent = `Response ${index+1}: ▶`;
             expandArrow.classList.add('expand-arrow');
             div.appendChild(expandArrow);
             let responseContent = document.createElement('span');
-            responseContent.textContent = `Response ${index+1}: ${JSON.stringify(entry.resource)}`;
+            responseContent.textContent = `${JSON.stringify(entry.resource)}`;
             responseContent.classList.add('expandable-content');
             div.appendChild(responseContent);
             resultsContainer.appendChild(div);
