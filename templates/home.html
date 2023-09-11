@@ -7,6 +7,12 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      h1, p, input, label, button {
+        margin: 10px;
+        padding: 10px;
+      }
+    </style>
     <title>FHIR Forms</title>
   </head>
   <body>
@@ -18,15 +24,23 @@
       <div class="row">
         <div class="col-md-6">
           <form id="urlForm" class="mt-3">
-            <div class="form-group">
-              <label for="formURL">Questionnaire (where does your Questionnaire live?)</label>
-              <input type="url" class="form-control" id="formURL" placeholder="Enter form URL" value="https://hapi.fhir.org/baseR4/Questionnaire/11440959">
-              <label for="endpointURL">QuestionnaireResponse (where should QuestionnaireResponses be sent)</label>
-              <input type="url" class="form-control" id="endpointURL" placeholder="Enter endpoint URL" value="https://hapi.fhir.org/baseR4/QuestionnaireResponse">        
+            <div class="form-group row">
+              <label for="formURL" class="col-sm-2 col-form-label">Questionnaire (where does your Questionnaire live?)</label>
+              <div class="col-sm-10">
+                <input type="url" class="form-control" id="formURL" placeholder="Enter form URL" value="https://hapi.fhir.org/baseR4/Questionnaire/11440959">
+              </div>
+              <label for="endpointURL" class="col-sm-2 col-form-label">QuestionnaireResponse (where should responses be sent?)</label>
+              <div class="col-sm-10">
+                <input type="url" class="form-control" id="endpointURL" placeholder="Enter endpoint URL" value="https://hapi.fhir.org/baseR4/QuestionnaireResponse">        
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary">Generate shareable link</button>
-            <button type="button" id="viewResultsBtn" class="btn btn-secondary ml-2">View Questionnaire Results</button>
-            <button type="button" class="btn btn-warning ml-2" onclick="location.href='mailto:haotianhuang@gmail.com?subject=Feedback for FHIR Forms'">Email Feedback</button>
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Generate shareable link</button>
+                <button type="button" id="viewResultsBtn" class="btn btn-secondary ml-2">View Questionnaire Results</button>
+                <button type="button" class="btn btn-warning ml-2" onclick="location.href='mailto:haotianhuang@gmail.com?subject=Feedback for FHIR Forms'">Email Feedback</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
