@@ -84,7 +84,7 @@ let endpointUrl = '{{ endpoint_url }}';
 
 function processItem(item, summaryData) {
     if (item.answer && item.answer[0]) {
-        let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display;
+        let answerValue = item.answer[0].valueString || item.answer[0].valueCoding?.display || item.answer[0].valueDate || item.answer[0].valueInteger;
         summaryData[item.linkId] = summaryData[item.linkId] || {};
         summaryData[item.linkId][answerValue] = (summaryData[item.linkId][answerValue] || 0) + 1;
     }
