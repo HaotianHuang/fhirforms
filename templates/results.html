@@ -56,7 +56,9 @@
   </head>
   <body>
     <h1>Questionnaire Results for '{{ form_url }}'</h1>
-    <button type="button" class="btn btn-secondary ml-2" onclick="location.href='mailto:haotianhuang@gmail.com?subject=Feedback for FHIR Forms'">Email Feedback</button>
+    <button type="button" class="btn btn-warning ml-2" onclick="location.href='mailto:haotianhuang@gmail.com?subject=Feedback for FHIR Forms'">Email Feedback</button>
+    <button id="backBtn" class="btn btn-secondary mt-3 mb-3">Back to Home</button>  
+
     <div class="row">
       <div class="col-md-6">
         <h2>Summary</h2>
@@ -70,6 +72,11 @@
     </div>
 
     <script>
+
+document.getElementById('backBtn').addEventListener('click', function() {
+            window.location.href = '/';
+        });
+
 let formUrl = '{{ form_url }}';
 let endpointUrl = '{{ endpoint_url }}';    
 
