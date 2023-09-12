@@ -8,7 +8,10 @@
 
 - [2] POST QuestionnaireResponse (where should responses be sent?)
 
+![fhirforms Gif](./fhirforms.gif)
+
 ## Setup
 
 - Run the demo [here](https://fhirforms-1d1ea7b0526a.herokuapp.com/)
 - Run locally using `flask run` after installing packages
+
