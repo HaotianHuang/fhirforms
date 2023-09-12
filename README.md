@@ -8,7 +8,7 @@
 
 - [2] POST QuestionnaireResponse (where should responses be sent?)
 
-![Demo](fhirforms.gif)
+![Demo](fhirformscropped.gif)
 
 ## Setup
 
