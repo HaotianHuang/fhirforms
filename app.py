@@ -14,6 +14,10 @@ def form():
     form_url = request.args.get('form_url')
     return render_template('form.html', form_url=form_url)
 
+@app.route('/react')
+def react():
+    return render_template('react.html')
+
 @app.route('/results', methods=['GET'])
 def get_results():
     form_url = request.args.get('form_url')
