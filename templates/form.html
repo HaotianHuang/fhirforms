@@ -51,6 +51,7 @@
             <button id="backBtn" class="btn btn-secondary mt-3 mb-3">Back to Home</button>  
             <button type="button" class="btn btn-warning mt-3 mb-3 ml-3" onclick="location.href='mailto:haotianhuang@gmail.com?subject=Feedback for FHIR Forms'">Email Feedback</button>    
             <div id="formContainer"></div>
+            <div id="renderer"></div>
         </div>
         <div class="col-md-6">
             <button type="button" id="refreshJSON" class="btn btn-primary mt-3 mb-3">Refresh JSON (advanced)</button>
@@ -59,6 +60,10 @@
         </div>
         <button type="submit" id="pushBtn" class="btn btn-primary btn-lg btn-block mt-3">Submit Form</button>
     </div>
+
+    <!-- CSIRO Smart Forms bundled script -->
+    <script src="{{ url_for('static', filename='bundle.js') }}"></script>
+
     <!-- LForms Scripts -->
     <script src="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/webcomponent/assets/lib/zone.min.js"></script>
     <script src="https://clinicaltables.nlm.nih.gov/lforms-versions/34.0.0/webcomponent/lhc-forms.js"></script>
