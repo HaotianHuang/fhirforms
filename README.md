@@ -13,5 +13,5 @@
 ## Setup
 
 - Run the demo [here](https://fhirforms-1d1ea7b0526a.herokuapp.com/)
+- To get Smart Forms renderer to work properly, run `npm i` followed by `npm run build`
 - Run locally using `flask run` after installing packages
-
